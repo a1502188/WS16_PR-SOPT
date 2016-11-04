@@ -215,14 +215,47 @@ struct : Funktion {
     }
 
 } g5;
+
+//berechne x(k+1) aus x(k)
+double calx(double oldx, Funktion f) {
+    double newx;
+    newx=oldx-(f.x(oldx)/f.xx(oldx));
+    return newx;
+}
+
+
+//1-Dimensionales Newtonverfahren
+double newton1d(int precision, double startx, Funktion f){
+    int precisionten= pow(10,precision); //10^KommastellenprÃ¤zision
+    int a;  
+    int b;
+    double newx=startx; //x(k+1) initialisiert
+    do{            
+        if(f(startx) < f(newx))       //Wenn Werte sich immer weiter von Minimum entfernen, dann abbrechen und stattdessen gedÃ¤mpftes Newtonveffahren anwenden
+             break;
+        startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
+        newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
+        a=startx*precisionten;  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
+        b=newx*precisionten;
+    } while (a!=b)              // ÃœberprÃ¼fung ob die Werte schon gleich sind
+        if(f(startx) < f(newx))
+            newx = gednewton1d(int precision, double startx, Funktion f); // Wenn sich die Werte vom Minimum entfernen, dann gedÃ¤mpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
+    
+        
+        return newx;            // RÃ¼ckgabe der Minimalstelle
+        
+}
+    
+    
+    
 //----------------------------------------ENDE DER FUNKTIONSDEFINITIONEN--------------------------
 int main(){
     try{
     int choice=0;
-    cout << "Wählen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
+    cout << "WÃ¤hlen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
     cin >> choice;
 
-    if(choice==1) { //Programmabarbeitung für eindimensionale Funktionen
+    if(choice==1) { //Programmabarbeitung fÃ¼r eindimensionale Funktionen
         choice=0;
         cout<< "Waehlen Sie eine Funktion:" << endl << endl;
         cout << "(1) f1(x) = 2x^2 + e^(-2x)" << endl;
@@ -233,12 +266,12 @@ int main(){
         cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl;
         cout << "(7) (Eigene Funktion eintippen (Format: ------))" << endl;
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Kommastellen an!" << endl;
+        cout << "Geben Sie die gewÃ¼nschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!");
-        cout << "Geben Sie einen Startwert für x an." << endl;
+                throw invalid_argument("Negative PrÃ¤zision nicht erlaubt!");
+        cout << "Geben Sie einen Startwert fÃ¼r x an." << endl;
         double startx =0;
         cin >> startx;
 
@@ -257,7 +290,7 @@ int main(){
         }
 
     }
-    else if(choice==2) { // Programmabarbeitung für mehrdimensionale Funktionen
+    else if(choice==2) { // Programmabarbeitung fÃ¼r mehrdimensionale Funktionen
         choice=0;
         cout << "Waehlen Sie eine Funktion:" << endl << endl;
         cout << "(1) g1(x,y) = 3x^2 + y^2 - 3xy - 3x" << endl;
@@ -266,15 +299,15 @@ int main(){
         cout << "(4) g4(x,y) = |xy| + x^2 + y^2 - 2x - 4y" << endl;
         cout << "(5) g5(x,y) = (x^2 + < - 11)^2 + (x + y^2 - 7)^2" << endl;
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Kommastellen an!" << endl;
+        cout << "Geben Sie die gewÃ¼nschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!");
-        cout << "Geben Sie einen Startwert für x an." << endl;
+                throw invalid_argument("Negative PrÃ¤zision nicht erlaubt!");
+        cout << "Geben Sie einen Startwert fÃ¼r x an." << endl;
         double startx =0;
         cin >> startx;
-        cout << "Geben Sie einen Startwert für y an." << endl;
+        cout << "Geben Sie einen Startwert fÃ¼r y an." << endl;
         double starty =0;
         cin >> starty;
 
@@ -305,8 +338,8 @@ int main(){
 
 /*
 Die Funktionen haben die Variablen namen f1, f2 etc.
-Es werden im Client zwei bzw. drei Variablen definiert die für die Berechnung benötigt werden
-Der User gibt einerseits die Präzision in Kommastellen mit der Variable "int precision" an.
+Es werden im Client zwei bzw. drei Variablen definiert die fÃ¼r die Berechnung benÃ¶tigt werden
+Der User gibt einerseits die PrÃ¤zision in Kommastellen mit der Variable "int precision" an.
 Weiters gibt er den Startwert/die Startwerte "double startx" und "double starty" an.
 
 */
