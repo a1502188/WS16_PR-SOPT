@@ -235,8 +235,8 @@ double newton1d(int precision, double startx, Funktion f){
              break;
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
-        a=startx*precisionten;  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
-        b=newx*precisionten;
+        a=abs(startx*precisionten);  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
+        b=abs(newx*precisionten);
     } while (a!=b)              // Überprüfung ob die Werte schon gleich sind
         if(f(startx) < f(newx))
             newx = gednewton1d(int precision, double startx, Funktion f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
