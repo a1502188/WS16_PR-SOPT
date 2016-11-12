@@ -170,22 +170,22 @@ struct : Funktion {
         return(abs(x*y)+x*x+y*y-2*x-4*y);
     }
     double x (double x, double y) {
-        return();
+        return(((abs(y)*x)/ abs(x))+2x-2);
     }
     double y (double x, double y) {
-        return();
+        return(((abs(x)*y)/ abs(y))+2y-4);
     }
     double xx (double x, double y) {
-        return();
+        return(2);
     }
     double xy (double x, double y) {
-        return();
+        return((y*x)/(abs(y)*abs(x));
     }
     double yx (double x, double y) {
-        return();
+        return((y*x)/(abs(y)*abs(x));
     }
     double yy (double x, double y) {
-        return();
+        return(2);
     }
 
 } g4;
@@ -222,8 +222,41 @@ double calx(double oldx, Funktion f) {
     newx=oldx-(f.x(oldx)/f.xx(oldx));
     return newx;
 }
+               
+double gedCalx(double oldx, Funktion f, double lambda) {
+    double newx;
+    newx=oldx-lambda*(f.x(oldx)/f.xx(oldx));
+    return newx;
+}
 
-
+//Gedämpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
+double gednewton1d(int precision, double startx, Funktion f) {
+    
+    int precisionten= pow(10,precision); //10^Kommastellenpräzision
+    int a;  
+    int b;
+    int m=-1;
+    double lambda = pow(0.5, m);  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
+    double newx=startx; //x(k+1) initialisiert
+    do{      
+        m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von der Nullstelle entfernt wird
+        
+    } while (abs(f.value(startx)) <= abs(f.value(newx))*lambda) 
+        
+    do{     
+        startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
+        newx= gedCalx(startx, f, lambda);  // Newtonverfahren-Formel anwenden mit beigefügtem Lambda
+        a=abs(startx*precisionten);  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
+        b=abs(newx*precisionten);
+    } while (a!=b)              // Überprüfung ob die Werte schon gleich sind
+        
+    
+        
+        return newx;            // Rückgabe der Minimalstelle
+    
+}
+               
+               
 //1-Dimensionales Newtonverfahren
 double newton1d(int precision, double startx, Funktion f){
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
@@ -231,20 +264,21 @@ double newton1d(int precision, double startx, Funktion f){
     int b;
     double newx=startx; //x(k+1) initialisiert
     do{            
-        if(f(startx) < f(newx))       //Wenn Werte sich immer weiter von Minimum entfernen, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
+        if(abs(f.value(startx)) < abs(f.value(newx)))       //Wenn Werte sich immer weiter von Minimum entfernen, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
              break;
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
         a=abs(startx*precisionten);  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
         b=abs(newx*precisionten);
     } while (a!=b)              // Überprüfung ob die Werte schon gleich sind
-        if(f(startx) < f(newx))
-            newx = gednewton1d(int precision, double startx, Funktion f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
+        if(abs(f.value(startx)) < abs(f.value(newx)))
+            newx = gednewton1d(precision, startx, f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
         
         return newx;            // Rückgabe der Minimalstelle
         
 }
+
     
     
     
