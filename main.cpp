@@ -9,29 +9,29 @@ using namespace std;
 // -----------------------DEFINITION ALLER IN DEN ANFORDERUNGEN VERLANGTEN FUNKTIONEN DIE VON DER KLASSE FUNKTION ABGELEITET WERDEN-----------------------------
 
 // 2x^2+e^(-2x)
-struct: Funktion {
-    double value (double x) {
-        return (2*x*x + exp(-2*x));
-    }
-    double x(double x){
-        return (4*x-2*exp(-2*x));
-    }
-    double xx(double x) {
-        return (4*exp(-2*x)+4);
-    }
+struct : Funktion {
+	double value (double x) {
+	    return (2*x*x + exp(-2*x));
+	}
+	double x (double x) {
+	    return (4*x-2*exp(-2*x));
+	}
+	double xx (double x) {
+	    return (4*exp(-2*x)+4);
+	}
 } f1;
 
 // x^4/4-x^2+2x
-struct: Funktion {
-    double value (double x) {
-        return ((x*x*x*x)/4-x*x+2*x);
-    }
-    double x (double x) {
-        return (x*x*x-2*x+2);
-    }
-    double xx (double x) {
-        return (3*x*x-2);
-    }
+struct : Funktion {
+	double value (double x) {
+	    return ((x*x*x*x)/4-x*x+2*x);
+	}
+	double x (double x) {
+	    return (x*x*x-2*x+2);
+	}
+	double xx (double x) {
+	    return (3*x*x-2);
+	}
 } f2;
 
 // x^5+5x^4+5x^3-5x^2-6x
@@ -170,19 +170,19 @@ struct : Funktion {
         return(abs(x*y)+x*x+y*y-2*x-4*y);
     }
     double x (double x, double y) {
-        return(((abs(y)*x)/ abs(x))+2x-2);
+        return(((abs(y)*x)/ abs(x))+2*x-2);
     }
     double y (double x, double y) {
-        return(((abs(x)*y)/ abs(y))+2y-4);
+        return(((abs(x)*y)/ abs(y))+2*y-4);
     }
     double xx (double x, double y) {
         return(2);
     }
     double xy (double x, double y) {
-        return((y*x)/(abs(y)*abs(x));
+        return((y*x)/(abs(y)*abs(x)));
     }
     double yx (double x, double y) {
-        return((y*x)/(abs(y)*abs(x));
+        return((y*x)/(abs(y)*abs(x)));
     }
     double yy (double x, double y) {
         return(2);
@@ -216,39 +216,46 @@ struct : Funktion {
 
 } g5;
 
+
 //berechne x(k+1) aus x(k)
-double calx(double oldx, Funktion f) {
+double calx(double oldx, Funktion &f) {
     double newx;
     newx=oldx-(f.x(oldx)/f.xx(oldx));
     return newx;
 }
                
-double gedCalx(double oldx, Funktion f, double lambda) {
+double gedCalx(double oldx, Funktion &f, double lambda) {
     double newx;
     newx=oldx-lambda*(f.x(oldx)/f.xx(oldx));
     return newx;
 }
 
+// Betragsmetrik; Abstand zwischen zwei reellen Zahlen
+double d(double x, double y) {
+	return abs(x-y);
+}
+
+// Euklidische Norm, Abstand zwischen zwei Vektoren im R^2
+double d(double x1, double x2, double y1, double y2) {
+	return sqrt(pow(x1-y1, 2) + pow(x2 - y2, 2));
+}
+
 //Gedämpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
-double gednewton1d(int precision, double startx, Funktion f) {
+double gednewton1d(int precision, double startx, Funktion &f) {
     
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
-    int a;  
-    int b;
     int m=-1;
     double lambda = pow(0.5, m);  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
     double newx=startx; //x(k+1) initialisiert
     do{      
         m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von der Nullstelle entfernt wird
         
-    } while (abs(f.value(startx)) <= abs(f.value(newx))*lambda) 
+    } while (abs(f.value(startx)) <= abs(f.value(newx))*lambda); 
         
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= gedCalx(startx, f, lambda);  // Newtonverfahren-Formel anwenden mit beigefügtem Lambda
-        a=abs(startx*precisionten);  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
-        b=abs(newx*precisionten);
-    } while (a!=b)              // Überprüfung ob die Werte schon gleich sind
+    } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
         
     
         
@@ -258,32 +265,26 @@ double gednewton1d(int precision, double startx, Funktion f) {
                
                
 //1-Dimensionales Newtonverfahren
-double newton1d(int precision, double startx, Funktion f){
+double newton1d(int precision, double startx, Funktion &f){
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
-    int a;  
-    int b;
     double newx=startx; //x(k+1) initialisiert
     do{            
         if(abs(f.value(startx)) < abs(f.value(newx)))       //Wenn Werte sich immer weiter von Minimum entfernen, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
              break;
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
-        a=abs(startx*precisionten);  //relevante Kommastellen werden vors Komma geschoben, alles dahinter wird abgeschnitten, da a und b int sind
-        b=abs(newx*precisionten);
-    } while (a!=b)              // Überprüfung ob die Werte schon gleich sind
-        if(abs(f.value(startx)) < abs(f.value(newx)))
-            newx = gednewton1d(precision, startx, f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
+    } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler klein genug ist
+
+    if(abs(f.value(startx)) < abs(f.value(newx)))
+        newx = gednewton1d(precision, startx, f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
         
-        return newx;            // Rückgabe der Minimalstelle
-        
+    return newx;            // Rückgabe der Minimalstelle
 }
 
-    
-    
-    
 //----------------------------------------ENDE DER FUNKTIONSDEFINITIONEN--------------------------
 int main(){
+
     try{
     int choice=0;
     cout << "Wählen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
@@ -291,7 +292,7 @@ int main(){
 
     if(choice==1) { //Programmabarbeitung für eindimensionale Funktionen
         choice=0;
-        cout<< "Waehlen Sie eine Funktion:" << endl << endl;
+        cout << "Waehlen Sie eine Funktion:" << endl << endl;
         cout << "(1) f1(x) = 2x^2 + e^(-2x)" << endl;
         cout << "(2) f2(x) = (x^4)/4 - x^2 + 2x" << endl;
         cout << "(3) f3(x) = x^5 + 5x^4 +5x^3 -5x^2 - 6x" << endl;
@@ -304,20 +305,35 @@ int main(){
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!");
+                throw invalid_argument("Negative Präzision nicht erlaubt!"); // TODO auch prüfen, dass int nicht überläuft bei pow(10, precision)
         cout << "Geben Sie einen Startwert für x an." << endl;
-        double startx =0;
+        double startx = 0;
         cin >> startx;
 
         switch (choice) { //Auswahl der Funktion
-            case 1:  //do something
+            case 1:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f1) << endl;
                 break;
 
-            case 2: //do something else
+            case 2:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f2) << endl;
                 break;
 
+            case 3:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f3) << endl;
+                break;
 
+            case 4:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f4) << endl;
+                break;
 
+            case 5:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f5) << endl;
+                break;
+
+            case 6:
+				cout << "Minimalstelle: " << newton1d(precision, startx, f6) << endl;
+                break;
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
                 break;
@@ -362,6 +378,7 @@ int main(){
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
                 break;
+		}
     }
     else {
         throw invalid_argument("Keine passende Auswahl getroffen! Tippen Sie die Zahl in Klammer ein, die Ihrem Wunschbefehl entspricht.");
