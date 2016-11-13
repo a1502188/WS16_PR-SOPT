@@ -257,6 +257,7 @@ double gednewton1d(int precision, double startx, Funktion &f) {
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= Calx(startx, f);  // Newtonverfahren-Formel anwenden
+	    
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
         
     
