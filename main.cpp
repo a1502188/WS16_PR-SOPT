@@ -246,10 +246,11 @@ double gednewton1d(int precision, double startx, Funktion &f) {
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
     int m=-1;
     double lambda = pow(0.5, m);  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
-    double newx= calx(startx, f); //erster neuer Punkt wird aus Startpunkt errechnet
+    double newx; //erster neuer Punkt wird aus Startpunkt errechnet
     do{      
         m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
-        
+        newx= gedCalx(startx, f, lambda);
+	    
     } while (abs(f.value(startx)) < abs(f.value(newx))*lambda); // (Vergleich über < fehlerhaft, noch nicht final)
         
     do{     
