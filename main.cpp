@@ -251,11 +251,11 @@ double gednewton1d(int precision, double startx, Funktion &f) {
         m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
         newx= gedCalx(startx, f, lambda);
 	    
-    } while (abs(f.value(startx)) < abs(f.value(newx))*lambda); // (Vergleich über < fehlerhaft, noch nicht final)
+    } while (abs(f.value(startx)) < abs(f.value(newx))); // (Vergleich über < fehlerhaft, noch nicht final)
         
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
-        newx= gedCalx(startx, f, lambda);  // Newtonverfahren-Formel anwenden mit beigefügtem Lambda
+        newx= Calx(startx, f);  // Newtonverfahren-Formel anwenden mit beigefügtem Lambda
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
         
     
