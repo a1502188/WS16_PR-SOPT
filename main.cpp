@@ -241,22 +241,26 @@ double d(double x1, double x2, double y1, double y2) {
 }
 
 //Gedämpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
-double gednewton1d(int precision, double startx, Funktion &f) {
-    
+double gednewton1d(int precision, double startx, Funktion &f, double dn) {
+    cout<< "started ged�mpftes newton";
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
     int m=-1;
-    double lambda = pow(0.5, m);  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
+    double lambda;  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
     double newx; 
+    double dold=dn;
+    double dnew=0;
     do{      
-        m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
-        newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
-	    
-    } while (abs(f.value(startx)) < abs(f.value(newx))); // Wenn noch immer kleiner, wird Lambda nochmal verkleinert und nochmal durchlaufen
+        startx=newx;
+		m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
+        lambda = pow(0.5, m);
+		newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
+	    dnew= d(startx, newx);
+    } while (dnew>=dold); // Wenn noch immer kleiner, wird Lambda nochmal verkleinert und nochmal durchlaufen
 	                                                 // (Vergleich über f.value fehlerhaft, noch nicht final)
         
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
-        newx= Calx(startx, f);  // Newtonverfahren-Formel anwenden
+        newx= gedCalx(startx, f,lambda);  // Newtonverfahren-Formel anwenden
 	    
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
         
@@ -271,15 +275,21 @@ double gednewton1d(int precision, double startx, Funktion &f) {
 double newton1d(int precision, double startx, Funktion &f){
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
     double newx=startx; //x(k+1) initialisiert
+    double dold=0;
+    double dnew=0;
+    int iterationcounter=0;
     do{            
-        if(abs(f.value(startx)) < abs(f.value(newx)))       //Wenn Werte sich immer weiter von Minimum entfernen, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
+        if(dnew>=dold && iterationcounter > 5)       //Wenn Werteabst�nde nach 5 Iteration gr��er werden, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
              break;
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
+   		dold=dnew;
+   		dnew = d(startx, newx);
+   		iterationcounter++;
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler klein genug ist
 
-    if(abs(f.value(startx)) < abs(f.value(newx)))
-        newx = gednewton1d(precision, startx, f); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
+    if(dnew>=dold)
+        newx = gednewton1d(precision, startx, f, dnew); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
         
     return newx;            // Rückgabe der Minimalstelle
@@ -287,7 +297,6 @@ double newton1d(int precision, double startx, Funktion &f){
 
 //----------------------------------------ENDE DER FUNKTIONSDEFINITIONEN--------------------------
 int main(){
-
     try{
     int choice=0;
     cout << "Wählen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
@@ -388,6 +397,8 @@ int main(){
     }
     } // Ende TRY
     catch(invalid_argument& a) {cerr << a.what() << endl;}
+    
+    
 }   // Ende MAIN
 
 /*
