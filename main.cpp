@@ -112,6 +112,7 @@ struct : Funktion {
     }
 } g1;
 
+
 // 100*(y-x^2)^2 + (x-1)^2
 struct : Funktion {
     double value(double x, double y) {
@@ -292,7 +293,43 @@ double newton1d(int precision, double startx, Funktion &f){
         newx = gednewton1d(precision, startx, f, dnew); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
         
-    return newx;            // Rückgabe der Minimalstelle
+    return f.value(newx);            // Rückgabe der Minimalstelle
+}
+
+double newton2d(int precision, double startx, double starty, Funktion &g) {
+	double currentx=startx;
+	double currenty=starty;
+	double hessematrix [2][2];
+	double gradient [2];
+	double newabsvalue;
+	double oldabsvalue;
+	double invhessematrix[2][2];
+	do{
+	
+	hessematrix[0][0] = g.xx(currentx, currenty);
+	hessematrix[0][1] = g.xy(currentx, currenty);
+	hessematrix[1][0] = g.yx(currentx, currenty);
+	hessematrix[1][1] = g.yy(currentx, currenty);
+	gradient[0] = g.x(currentx, currenty);
+	gradient[1] = g.y(currentx, currenty);
+	double invertdet= 1/(hessematrix[0][0] * hessematrix[1][1] - hessematrix[0][1] * hessematrix[1][0]);
+	invhessematrix[0][0] = hessematrix[1][1] * invertdet;
+	invhessematrix[0][1] = -hessematrix[0][1] * invertdet;
+	invhessematrix[1][0] = -hessematrix[1][0] * invertdet;
+	invhessematrix[1][1] = hessematrix[0][0] * invertdet;
+
+	double newx= currentx - (invhessematrix[0][0]*gradient[0] + invhessematrix[0][1]*gradient[1]);
+	double newy= currenty - (invhessematrix[1][0]*gradient[0] + invhessematrix[1][1]*gradient[1]);
+	newabsvalue = sqrt(newx*newx + newy*newy);
+	oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
+	
+	cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
+	currentx = newx;
+	currenty = newy;
+	
+	} while(int (d(newabsvalue, oldabsvalue)*pow(10, precision))> 0);
+
+	return g.value(currentx, currenty);
 }
 
 //----------------------------------------ENDE DER FUNKTIONSDEFINITIONEN--------------------------
@@ -313,7 +350,7 @@ int main(){
         cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl;
         cout << "(7) (Eigene Funktion eintippen (Format: ------))" << endl;
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Kommastellen an!" << endl;
+        cout << "Geben Sie die gewünschte Rechengenauigkeit in Komman an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
@@ -324,27 +361,27 @@ int main(){
 
         switch (choice) { //Auswahl der Funktion
             case 1:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f1) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f1) << endl;
                 break;
 
             case 2:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f2) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f2) << endl;
                 break;
 
             case 3:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f3) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f3) << endl;
                 break;
 
             case 4:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f4) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f4) << endl;
                 break;
 
             case 5:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f5) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f5) << endl;
                 break;
 
             case 6:
-				cout << "Minimalstelle: " << newton1d(precision, startx, f6) << endl;
+				cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
                 break;
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
@@ -375,10 +412,12 @@ int main(){
 
         switch (choice) { //Auswahl der Funktion
             case 1:  //do something
-                break;
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g1) << endl;
+				break;
 
             case 2: //do something else
-                break;
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g2) << endl;
+				break;
 
 
 
