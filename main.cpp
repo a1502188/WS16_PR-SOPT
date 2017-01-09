@@ -389,7 +389,7 @@ int main(){
         cin >> precision;
         if(precision<0)
                 throw invalid_argument("Negative Praezision nicht erlaubt!"); // TODO auch prüfen, dass int nicht überläuft bei pow(10, precision)
-        cout << "Geben Sie einen Startwert für x an." << endl;
+        cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx = 0;
         cin >> startx;
 
@@ -408,7 +408,7 @@ int main(){
                      << "set output 'funktion.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-5:20]" <<endl
-                     << "plot 2*x*x + exp(-2*x) title 'Funktion', \\" <<endl 
+                     << "plot 2*x*x + exp(-2*x) title 'f(x)=2x^2+e^(-2x)', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
@@ -431,7 +431,7 @@ int main(){
                      << "set output 'funktion.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-5:20]" <<endl
-                     << "plot (x*x*x*x)/4-x*x+2*x title 'Funktion', \\" <<endl 
+                     << "plot (x*x*x*x)/4-x*x+2*x title 'f(x)=x^4/4-x^2+2x', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
@@ -454,7 +454,7 @@ int main(){
                      << "set output 'funktion.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
-                     << "plot x*x*x*x*x+5*x*x*x*x+5*x*x*x-5*x*x-6*x title 'Funktion', \\" <<endl 
+                     << "plot x*x*x*x*x+5*x*x*x*x+5*x*x*x-5*x*x-6*x title 'f(x)=x^5+5x^4+5x^3-5x^2-6x', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
@@ -474,8 +474,8 @@ int main(){
                      << "set output 'funktion.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-80:200]" <<endl
-                     << "plot x*x*x*x-16*x*x-1 title 'Funktion', \\" <<endl 
-		             << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+                     << "plot x*x*x*x-16*x*x-1 title 'f(x)=x^4-16x^2-1', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
 				
@@ -489,9 +489,9 @@ int main(){
                 break;
 
             case 6: {
-		        cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
+		cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
  
-		        ofstream plot("plot.gp");
+	        ofstream plot("plot.gp");
 				
 		
 		        	
@@ -499,8 +499,8 @@ int main(){
                      << "set output 'funktion.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
-                     << "plot log(abs(x*x*x*x-16*x*x-1)) title 'Funktion', \\" <<endl 
-		             << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+                     << "plot log(abs(x*x*x*x-16*x*x-1)) title 'Platzhalter', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
 				
@@ -523,15 +523,15 @@ int main(){
         cout << "(4) g4(x,y) = |xy| + x^2 + y^2 - 2x - 4y" << endl;
         cout << "(5) g5(x,y) = (x^2 + < - 11)^2 + (x + y^2 - 7)^2" << endl;
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Kommastellen an!" << endl;
+        cout << "Geben Sie die gewuenschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
                 throw invalid_argument("Negative Präzision nicht erlaubt!");
-        cout << "Geben Sie einen Startwert für x an." << endl;
+        cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx =0;
         cin >> startx;
-        cout << "Geben Sie einen Startwert für y an." << endl;
+        cout << "Geben Sie einen Startwert fuer y an." << endl;
         double starty =0;
         cin >> starty;
 
@@ -546,7 +546,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
 	             << "set ticslevel 0" <<endl
-                     << "splot 3*x*x+y*y-3*x*y-3*x title '3x^2+y^2-3xy-3x', \\" <<endl 
+                     << "splot 3*x*x+y*y-3*x*y-3*x title 'g(x)=3x^2+y^2-3xy-3x', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 		    
 		plot.close();    
@@ -564,7 +564,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
 	             << "set ticslevel 0" <<endl
-                     << "splot 100*(y-x*x)*(y-x*x)+(x-1)*(x-1) title '100*(y-x^2)^2 + (x-1)^2', \\" <<endl 
+                     << "splot 100*(y-x*x)*(y-x*x)+(x-1)*(x-1) title 'g(x)=100*(y-x^2)^2 + (x-1)^2', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 		    
 		plot.close();  		
@@ -582,7 +582,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
 	             << "set ticslevel 0" <<endl
-                     << "splot y*y*y*y+2*x*x-3*x*y+1 title 'y^4+2x^2-3xy+1', \\" <<endl 
+                     << "splot y*y*y*y+2*x*x-3*x*y+1 title 'g(x)=y^4+2x^2-3xy+1', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 		    
 		plot.close();  				
@@ -618,7 +618,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
 	             << "set ticslevel 0" <<endl
-                     << "splot (x*x+y-11)*(x*x+y-11)+(x+y*y-7)*(x+y*y-7) title '(x^2+y-11)^2 + (x+y^2-7)^2', \\" <<endl 
+                     << "splot (x*x+y-11)*(x*x+y-11)+(x+y*y-7)*(x+y*y-7) title 'g(x)=(x^2+y-11)^2 + (x+y^2-7)^2', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 		    
 		plot.close();  			
