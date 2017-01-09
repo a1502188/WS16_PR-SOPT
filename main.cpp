@@ -256,20 +256,22 @@ double gednewton1d(int precision, double startx, Funktion &f, double dn) {
 
     ofstream data("data.dat");
     data << "#x y" << endl 
-	     << startx <<" " << f(startx) <<endl;
+	 << startx <<" " << f(startx) <<endl;
+	
     do{      
         startx=newx;
-		m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
+	m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
         lambda = pow(0.5, m);
-		newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
-	    dnew= d(startx, newx);
+	newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
+        dnew= d(startx, newx);
+	    
     } while (dnew>=dold); // Wenn noch immer kleiner, wird Lambda nochmal verkleinert und nochmal durchlaufen
 	                                                 // (Vergleich über f.value fehlerhaft, noch nicht final)
         
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= gedCalx(startx, f,lambda);  // Newtonverfahren-Formel anwenden
-	    data << newx <<" " << f(newx) <<endl;
+	data << newx <<" " << f(newx) <<endl;
    
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
         
@@ -288,7 +290,7 @@ double newton1d(int precision, double startx, Funktion &f){
 
     ofstream data("data.dat");
     data << "#x y" << endl 
-	     << startx <<" " << f(startx) <<endl;
+	 << startx <<" " << f(startx) <<endl;
 	 					 
    
 
@@ -303,9 +305,9 @@ double newton1d(int precision, double startx, Funktion &f){
 
 ;
         newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
-   		dold=dnew;
-   		dnew = d(startx, newx);
-   		iterationcounter++;
+   	dold=dnew;
+   	dnew = d(startx, newx);
+   	iterationcounter++;
         data << newx <<" " << f(newx) <<endl;
 	 					 
                 
@@ -383,10 +385,11 @@ int main(){
 
         switch (choice) { //Auswahl der Funktion
             case 1: {
-		        cout << "Extremwert: " << newton1d(precision, startx, f1) << endl;
+		    
+		cout << "Extremwert: " << newton1d(precision, startx, f1) << endl;
 
                 	
-		        ofstream plot("plot.gp");
+		ofstream plot("plot.gp");
 				
 		
 	
@@ -396,7 +399,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-5:20]" <<endl
                      << "plot 2*x*x + exp(-2*x) title 'Funktion', \\" <<endl 
-		             << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
 				
@@ -406,10 +409,10 @@ int main(){
             }
 
             case 2: {
-	            cout << "Extremwert: " << newton1d(precision, startx, f2) << endl;
+	        cout << "Extremwert: " << newton1d(precision, startx, f2) << endl;
 
 		
-	          	ofstream plot("plot.gp");
+	        ofstream plot("plot.gp");
 				
 	
 	
@@ -419,7 +422,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-5:20]" <<endl
                      << "plot (x*x*x*x)/4-x*x+2*x title 'Funktion', \\" <<endl 
-		             << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
 				
@@ -433,7 +436,7 @@ int main(){
 	        cout << "Extremwert: " << newton1d(precision, startx, f3) << endl;
 
                
-		        ofstream plot("plot.gp");
+		ofstream plot("plot.gp");
 				
 		
 		        	
@@ -442,7 +445,7 @@ int main(){
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
                      << "plot x*x*x*x*x+5*x*x*x*x+5*x*x*x-5*x*x-6*x title 'Funktion', \\" <<endl 
-		             << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 	             
 					 
 				
@@ -452,8 +455,8 @@ int main(){
                 break;
 
             case 4: {
-		        cout << "Extremwert: " << newton1d(precision, startx, f4) << endl;
-		        ofstream plot("plot.gp");
+		cout << "Extremwert: " << newton1d(precision, startx, f4) << endl;
+		ofstream plot("plot.gp");
 				
 		
 		        	
@@ -523,13 +526,47 @@ int main(){
         cin >> starty;
 
         switch (choice) { //Auswahl der Funktion
-            case 1:  //do something
+            case 1: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g1) << endl;
-				break;
+		    
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0"
+                     << "splot 3*x*x+y*y-3*x*y-3*x title '3x^2+y^2-3xy-3x', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();    
+					    
+	    }
+	        break;
 
-            case 2: //do something else
+            case 2: { //do something else
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g2) << endl;
-				break;
+				
+	    }
+		break;	 
+			
+            case 3: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g3) << endl;
+				
+	    }
+		break;	
+			
+            case 4: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g4) << endl;
+				
+	    }
+		break;	
+			
+            case 5: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g5) << endl;
+				
+	    }		
+		break;	
 
 
 
