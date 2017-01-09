@@ -328,6 +328,12 @@ double newton2d(int precision, double startx, double starty, Funktion &g) {
 	double newabsvalue;
 	double oldabsvalue;
 	double invhessematrix[2][2];
+	
+        ofstream data("data.dat");
+	
+        data << "#x y z" << endl 
+	     << startx <<" " << starty <<" " << g.value(startx, starty) <<endl;
+	
 	do{
 	
 	hessematrix[0][0] = g.xx(currentx, currenty);
@@ -348,6 +354,10 @@ double newton2d(int precision, double startx, double starty, Funktion &g) {
 	oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
 	
 	cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
+		
+        data << newx <<" " << newy <<" " << g.value(newx, newy) <<endl;	
+	     
+		
 	currentx = newx;
 	currenty = newy;
 	
