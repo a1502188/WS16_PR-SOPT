@@ -535,7 +535,7 @@ int main(){
         double starty =0;
         cin >> starty;
 
-        switch (choice) { //Auswahl der Funktion
+       switch (choice) { //Auswahl der Funktion
             case 1: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g1) << endl;
 		    
@@ -545,7 +545,7 @@ int main(){
                      << "set output 'funktion3d.png'" <<endl
                      << "set xrange [-10:10]" <<endl  
                      << "set yrange [-10:10]" <<endl
-	             << "set ticslevel 0"
+	             << "set ticslevel 0" <<endl
                      << "splot 3*x*x+y*y-3*x*y-3*x title '3x^2+y^2-3xy-3x', \\" <<endl 
 		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
 		    
@@ -556,6 +556,18 @@ int main(){
 
             case 2: { //do something else
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g2) << endl;
+		
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot 100*(y-x*x)*(y-x*x)+(x-1)*(x-1) title '100*(y-x^2)^2 + (x-1)^2', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  		
 				
 	    }
 		break;	 
@@ -563,18 +575,53 @@ int main(){
             case 3: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g3) << endl;
 				
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot y*y*y*y+2*x*x-3*x*y+1 title 'y^4+2x^2-3xy+1', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  				
+				
 	    }
 		break;	
 			
             case 4: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g4) << endl;
 				
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot x title 'Platzhalter', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  				
+				
 	    }
 		break;	
 			
             case 5: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g5) << endl;
-				
+			
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot (x*x+y-11)*(x*x+y-11)+(x+y*y-7)*(x+y*y-7) title '(x^2+y-11)^2 + (x+y^2-7)^2', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  			
 	    }		
 		break;	
 
