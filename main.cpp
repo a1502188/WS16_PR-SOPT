@@ -529,7 +529,7 @@ int main(){
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!");
+                throw invalid_argument("Negative Praezision nicht erlaubt!");
         cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx =0;
         cin >> startx;
