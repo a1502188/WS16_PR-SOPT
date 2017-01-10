@@ -250,7 +250,7 @@ double gednewton1d(int precision, double startx, Funktion &f, double dn) {
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
     int m=-1;
     double lambda;  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
-    double newx; 
+    double newx =startx; 
     double dold=dn;
     double dnew=0;
 
@@ -274,7 +274,7 @@ double gednewton1d(int precision, double startx, Funktion &f, double dn) {
 	data << newx <<" " << f(newx) <<endl;
    
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
-        
+        data.close();
     
         
         return newx;            // Rückgabe der Minimalstelle
@@ -312,11 +312,13 @@ double newton1d(int precision, double startx, Funktion &f){
 	 					 
                 
     } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler klein genug ist
-
+	
+        data.close();  
+	
     if(dnew>=dold)
         newx = gednewton1d(precision, startx, f, dnew); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
-    data.close();  
+    
     return f.value(newx);            // Rückgabe der Minimalstelle
 }
 
