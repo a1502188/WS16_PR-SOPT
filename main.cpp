@@ -1,7 +1,10 @@
 #include <iostream>
 #include <cmath>
-#include"Funktion.h"
 #include <stdexcept>
+
+#include "Funktion.h"
+#include "polynom1d.h"
+
 using namespace std;
 
 //SIEHE ANMERKUNG AM ENDE
@@ -304,29 +307,28 @@ double newton2d(int precision, double startx, double starty, Funktion &g) {
 	double newabsvalue;
 	double oldabsvalue;
 	double invhessematrix[2][2];
-	do{
-	
-	hessematrix[0][0] = g.xx(currentx, currenty);
-	hessematrix[0][1] = g.xy(currentx, currenty);
-	hessematrix[1][0] = g.yx(currentx, currenty);
-	hessematrix[1][1] = g.yy(currentx, currenty);
-	gradient[0] = g.x(currentx, currenty);
-	gradient[1] = g.y(currentx, currenty);
-	double invertdet= 1/(hessematrix[0][0] * hessematrix[1][1] - hessematrix[0][1] * hessematrix[1][0]);
-	invhessematrix[0][0] = hessematrix[1][1] * invertdet;
-	invhessematrix[0][1] = -hessematrix[0][1] * invertdet;
-	invhessematrix[1][0] = -hessematrix[1][0] * invertdet;
-	invhessematrix[1][1] = hessematrix[0][0] * invertdet;
 
-	double newx= currentx - (invhessematrix[0][0]*gradient[0] + invhessematrix[0][1]*gradient[1]);
-	double newy= currenty - (invhessematrix[1][0]*gradient[0] + invhessematrix[1][1]*gradient[1]);
-	newabsvalue = sqrt(newx*newx + newy*newy);
-	oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
+	do{
+		hessematrix[0][0] = g.xx(currentx, currenty);
+		hessematrix[0][1] = g.xy(currentx, currenty);
+		hessematrix[1][0] = g.yx(currentx, currenty);
+		hessematrix[1][1] = g.yy(currentx, currenty);
+		gradient[0] = g.x(currentx, currenty);
+		gradient[1] = g.y(currentx, currenty);
+		double invertdet= 1/(hessematrix[0][0] * hessematrix[1][1] - hessematrix[0][1] * hessematrix[1][0]);
+		invhessematrix[0][0] = hessematrix[1][1] * invertdet;
+		invhessematrix[0][1] = -hessematrix[0][1] * invertdet;
+		invhessematrix[1][0] = -hessematrix[1][0] * invertdet;
+		invhessematrix[1][1] = hessematrix[0][0] * invertdet;
+
+		double newx= currentx - (invhessematrix[0][0]*gradient[0] + invhessematrix[0][1]*gradient[1]);
+		double newy= currenty - (invhessematrix[1][0]*gradient[0] + invhessematrix[1][1]*gradient[1]);
+		newabsvalue = sqrt(newx*newx + newy*newy);
+		oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
 	
-	cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
-	currentx = newx;
-	currenty = newy;
-	
+		cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
+		currentx = newx;
+		currenty = newy;
 	} while(int (d(newabsvalue, oldabsvalue)*pow(10, precision))> 0);
 
 	return g.value(currentx, currenty);
@@ -339,7 +341,7 @@ int main(){
     cout << "Wählen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
     cin >> choice;
 
-    if(choice==1) { //Programmabarbeitung für eindimensionale Funktionen
+    if(choice==1) { //Programmabarbeitung fuer eindimensionale Funktionen
         choice=0;
         cout << "Waehlen Sie eine Funktion:" << endl << endl;
         cout << "(1) f1(x) = 2x^2 + e^(-2x)" << endl;
@@ -348,14 +350,14 @@ int main(){
         cout << "(4) f4(x) = x^4 -16x^2 - 1" << endl;
         cout << "(5) f5(x) = ln(|x^3 + 5x -5|)" << endl;
         cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl;
-        cout << "(7) (Eigene Funktion eintippen (Format: ------))" << endl;
+        cout << "(7) (Eigene Funktion eintippen (Format: ax^k+bx^l+cx^m... alle Koeffizienten und Exponenten muessen angegeben werden))" << endl;
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Komman an!" << endl;
+        cout << "Geben Sie die gewuenschte Rechengenauigkeit in Nachkommastellen an." << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!"); // TODO auch prüfen, dass int nicht überläuft bei pow(10, precision)
-        cout << "Geben Sie einen Startwert für x an." << endl;
+                throw invalid_argument("Negative Praezision nicht erlaubt!"); // TODO auch pruefen, dass int nicht Ueberlaeuft bei pow(10, precision)
+        cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx = 0;
         cin >> startx;
 
@@ -383,6 +385,19 @@ int main(){
             case 6:
 				cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
                 break;
+
+			case 7:
+				cout << "Geben Sie das Polynom ein: ";
+				try {
+					polynom1d f_in = polynom1d(cin);
+				/*	cout << "f(1) = " << f_in(1) << endl;
+					cout << "f'(1) = " << f_in.x(1) << endl;
+					cout << "f''(1) = " << f_in.xx(1) << endl; */
+					cout << "Extremwert: " << newton1d(precision, startx, f_in) << endl;
+				} catch (invalid_argument e) {
+					cerr << "Invalid Argument: " << e.what();
+				}
+				break;
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
                 break;
