@@ -58,7 +58,7 @@ public:
 			for(int j=0; j<x; j++) {
 				exp += (a[i-j]-'0')*pow(10, j);
 			}
-			cout << "exp = " << exp << endl;
+		//	cout << "exp = " << exp << endl;
 
 			if(exp > this->n) this->n = exp;
 
@@ -107,7 +107,7 @@ public:
 		//	cout << elem[0] << "*" << x << "^" << elem[1] << " = " << elem[0] << "*" << pow(x, elem[1]) << " = " << elem[0]*pow(x, elem[1]) << endl;
 			fx += elem[0]*pow(x, elem[1]);
 		}
-
+	//	cout << "f(" << x << ") = " << fx << endl;
 		return fx;
 	}
 
@@ -117,10 +117,11 @@ public:
 		for(auto elem:poly) {
 			if(elem[1] >= 1) {
 				fx += elem[0]*elem[1]*pow(x, elem[1]-1);
-				cout << "+ " << elem[0] << "*" << elem[1] << "*" << x << "^" << elem[1]-1;
+			//	cout << "+ " << elem[0] << "*" << elem[1] << "*" << x << "^" << elem[1]-1;
 			}
 		}
-		cout << endl;
+	//	cout << endl;
+	//	cout << "f'(" << x << ") = " << fx << endl;
 
 		return fx;
 	}
@@ -131,6 +132,7 @@ public:
 		for(auto elem:poly) {
 			if(elem[1] >= 2) fx += elem[0]*elem[1]*(elem[1]-1)*pow(x, elem[1]-2);
 		}
+	//	cout << "f''(" << x << ") = " << fx << endl;
 
 		return fx;
 	}
