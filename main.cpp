@@ -246,7 +246,7 @@ double d(double x1, double x2, double y1, double y2) {
 
 //Gedämpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
 double gednewton1d(int precision, double startx, Funktion &f, double dn) {
-    cout<< "Gedaempftes Newtonverfahren angewendet: ";
+    cout<< "Starte gedaempftes Newtonverfahren... " <<endl;
     int precisionten= pow(10,precision); //10^Kommastellenpräzision
     int m=-1;
     double lambda;  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
