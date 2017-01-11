@@ -5,6 +5,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <limits>
+#include <string>
 
 #include "Funktion.h"	
 
@@ -135,5 +136,16 @@ public:
 	//	cout << "f''(" << x << ") = " << fx << endl;
 
 		return fx;
+	}
+
+	string toString() {
+		string s = "";
+		for(auto elem:poly) {
+			if(elem[0]>0) {
+				s += "+";
+			}
+			s += to_string(elem[0])+"*x^"+to_string(elem[1]);
+		}
+		return s;
 	}
 };

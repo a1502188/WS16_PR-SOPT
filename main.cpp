@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <stdexcept>
+#include <string>
 
 #include "Funktion.h"
 #include "polynom1d.h"
@@ -393,6 +394,7 @@ int main(){
 				/*	cout << "f(1) = " << f_in(1) << endl;
 					cout << "f'(1) = " << f_in.x(1) << endl;
 					cout << "f''(1) = " << f_in.xx(1) << endl; */
+					cout << "Polynom: " << f_in.toString() << endl;
 					cout << "Extremwert: " << newton1d(precision, startx, f_in) << endl;
 				} catch (invalid_argument e) {
 					cerr << "Invalid Argument: " << e.what();
