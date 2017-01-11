@@ -144,7 +144,7 @@ public:
 			if(elem[0]>0) {
 				s += "+";
 			}
-			s += to_string(elem[0])+"*x^"+to_string(elem[1]);
+			s += to_string(elem[0])+"*x**"+to_string(elem[1]);
 		}
 		return s;
 	}
