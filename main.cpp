@@ -1,11 +1,13 @@
+
 #include <iostream>
 #include <cmath>
+#include"Funktion.h"
 #include <stdexcept>
+#include <fstream> 
+#include <stdio.h>
 #include <string>
-
-#include "Funktion.h"
+#include <algorithm>
 #include "polynom1d.h"
-
 using namespace std;
 
 //SIEHE ANMERKUNG AM ENDE
@@ -228,6 +230,23 @@ double calx(double oldx, Funktion &f) {
     newx=oldx-(f.x(oldx)/f.xx(oldx));
     return newx;
 }
+
+
+  
+string toGnu(string s) {
+   int i = 0;
+   for (;;) {
+    i = s.find("^", i);
+    if (i == string::npos) {
+        break;
+    }
+    s.replace(i, 1, "**");
+}
+    return s;
+
+}
+
+
                
 double gedCalx(double oldx, Funktion &f, double lambda) {
     double newx;
@@ -245,59 +264,82 @@ double d(double x1, double x2, double y1, double y2) {
 	return sqrt(pow(x1-y1, 2) + pow(x2 - y2, 2));
 }
 
-//Gedämpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
+//GedÃ¤mpftes 1-Dimensionales Newtonverfahren UNDER CONSTRUCTION
 double gednewton1d(int precision, double startx, Funktion &f, double dn) {
-    cout<< "started ged�mpftes newton";
-    int precisionten= pow(10,precision); //10^Kommastellenpräzision
+    cout<< "Starte gedaempftes Newtonverfahren... " <<endl;
+    int precisionten= pow(10,precision); //10^KommastellenprÃ¤zision
     int m=-1;
     double lambda;  //Lambda wird mit steigendem m immer kleiner, so lange, bis sich nicht mehr von der Nullstelle entfernt wird
-    double newx; 
+    double newx =startx; 
     double dold=dn;
     double dnew=0;
+
+    ofstream data("data.dat");
+    data << "#x y" << endl 
+	 << startx <<" " << f(startx) <<endl;
+	
     do{      
         startx=newx;
-		m++; //m wird auf 0 erhöht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
+	m++; //m wird auf 0 erhÃ¶ht, und dann so lange, bis sich nicht mehr von dem Minimum entfernt wird
         lambda = pow(0.5, m);
-		newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
-	    dnew= d(startx, newx);
+	newx= gedCalx(startx, f, lambda); // neuer Punkt wird aus Startpunkt und Lambda errechnet
+        dnew= d(startx, newx);
+	    
     } while (dnew>=dold); // Wenn noch immer kleiner, wird Lambda nochmal verkleinert und nochmal durchlaufen
-	                                                 // (Vergleich über f.value fehlerhaft, noch nicht final)
+	                                                 // (Vergleich Ã¼ber f.value fehlerhaft, noch nicht final)
         
     do{     
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
         newx= gedCalx(startx, f,lambda);  // Newtonverfahren-Formel anwenden
-	    
-    } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler schon klein genug ist
-        
+	data << newx <<" " << f(newx) <<endl;
+   
+    } while (int(d(newx,startx)*precisionten) > 0);              // ÃœberprÃ¼fung ob der Fehler schon klein genug ist
+        data.close();
     
         
-        return newx;            // Rückgabe der Minimalstelle
+        return newx;            // RÃ¼ckgabe der Minimalstelle
     
 }
                
                
 //1-Dimensionales Newtonverfahren
 double newton1d(int precision, double startx, Funktion &f){
-    int precisionten= pow(10,precision); //10^Kommastellenpräzision
+    int precisionten= pow(10,precision); //10^KommastellenprÃ¤zision
     double newx=startx; //x(k+1) initialisiert
+
+
+    ofstream data("data.dat");
+    data << "#x y" << endl 
+	 << startx <<" " << f(startx) <<endl;
+	 					 
+   
+
+
     double dold=0;
     double dnew=0;
     int iterationcounter=0;
     do{            
-        if(dnew>=dold && iterationcounter > 5)       //Wenn Werteabst�nde nach 5 Iteration gr��er werden, dann abbrechen und stattdessen gedämpftes Newtonveffahren anwenden
+        if(dnew>=dold && iterationcounter > 5)       //Wenn Werteabstå¯¤e nach 5 Iteration grï¿½ï¿½ werden, dann abbrechen und stattdessen gedÃ¤mpftes Newtonveffahren anwenden
              break;
         startx=newx;            // Aus letzter iteration berechnetes x wird zu neuem startwert
-        newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
-   		dold=dnew;
-   		dnew = d(startx, newx);
-   		iterationcounter++;
-    } while (int(d(newx,startx)*precisionten) > 0);              // Überprüfung ob der Fehler klein genug ist
 
+;
+        newx= calx(startx, f);  // Newtonverfahren-Formel anwenden
+   	dold=dnew;
+   	dnew = d(startx, newx);
+   	iterationcounter++;
+        data << newx <<" " << f(newx) <<endl;
+	 					 
+                
+    } while (int(d(newx,startx)*precisionten) > 0);              // ÃœberprÃ¼fung ob der Fehler klein genug ist
+	
+        data.close();  
+	
     if(dnew>=dold)
-        newx = gednewton1d(precision, startx, f, dnew); // Wenn sich die Werte vom Minimum entfernen, dann gedämpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
+        newx = gednewton1d(precision, startx, f, dnew); // Wenn sich die Werte vom Minimum entfernen, dann gedÃ¤mpftes Newtonverfahren anwenden (NOCH NICHT IMPLEMENTIERT!)
     
-        
-    return f.value(newx);            // Rückgabe der Minimalstelle
+    
+    return f.value(newx);            // RÃ¼ckgabe der Minimalstelle
 }
 
 double newton2d(int precision, double startx, double starty, Funktion &g) {
@@ -308,28 +350,39 @@ double newton2d(int precision, double startx, double starty, Funktion &g) {
 	double newabsvalue;
 	double oldabsvalue;
 	double invhessematrix[2][2];
-
-	do{
-		hessematrix[0][0] = g.xx(currentx, currenty);
-		hessematrix[0][1] = g.xy(currentx, currenty);
-		hessematrix[1][0] = g.yx(currentx, currenty);
-		hessematrix[1][1] = g.yy(currentx, currenty);
-		gradient[0] = g.x(currentx, currenty);
-		gradient[1] = g.y(currentx, currenty);
-		double invertdet= 1/(hessematrix[0][0] * hessematrix[1][1] - hessematrix[0][1] * hessematrix[1][0]);
-		invhessematrix[0][0] = hessematrix[1][1] * invertdet;
-		invhessematrix[0][1] = -hessematrix[0][1] * invertdet;
-		invhessematrix[1][0] = -hessematrix[1][0] * invertdet;
-		invhessematrix[1][1] = hessematrix[0][0] * invertdet;
-
-		double newx= currentx - (invhessematrix[0][0]*gradient[0] + invhessematrix[0][1]*gradient[1]);
-		double newy= currenty - (invhessematrix[1][0]*gradient[0] + invhessematrix[1][1]*gradient[1]);
-		newabsvalue = sqrt(newx*newx + newy*newy);
-		oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
 	
-		cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
-		currentx = newx;
-		currenty = newy;
+        ofstream data("data.dat");
+	
+        data << "#x y z" << endl 
+	     << startx <<" " << starty <<" " << g.value(startx, starty) <<endl;
+	
+	do{
+	
+	hessematrix[0][0] = g.xx(currentx, currenty);
+	hessematrix[0][1] = g.xy(currentx, currenty);
+	hessematrix[1][0] = g.yx(currentx, currenty);
+	hessematrix[1][1] = g.yy(currentx, currenty);
+	gradient[0] = g.x(currentx, currenty);
+	gradient[1] = g.y(currentx, currenty);
+	double invertdet= 1/(hessematrix[0][0] * hessematrix[1][1] - hessematrix[0][1] * hessematrix[1][0]);
+	invhessematrix[0][0] = hessematrix[1][1] * invertdet;
+	invhessematrix[0][1] = -hessematrix[0][1] * invertdet;
+	invhessematrix[1][0] = -hessematrix[1][0] * invertdet;
+	invhessematrix[1][1] = hessematrix[0][0] * invertdet;
+
+	double newx= currentx - (invhessematrix[0][0]*gradient[0] + invhessematrix[0][1]*gradient[1]);
+	double newy= currenty - (invhessematrix[1][0]*gradient[0] + invhessematrix[1][1]*gradient[1]);
+	newabsvalue = sqrt(newx*newx + newy*newy);
+	oldabsvalue = sqrt(currentx*currentx + currenty * currenty);
+	
+	cout << "Aktueller Punkt: (" << newx << "|" << newy << ") " << endl;
+		
+        data << newx <<" " << newy <<" " << g.value(newx, newy) <<endl;	
+	     
+		
+	currentx = newx;
+	currenty = newy;
+	
 	} while(int (d(newabsvalue, oldabsvalue)*pow(10, precision))> 0);
 
 	return g.value(currentx, currenty);
@@ -337,9 +390,10 @@ double newton2d(int precision, double startx, double starty, Funktion &g) {
 
 //----------------------------------------ENDE DER FUNKTIONSDEFINITIONEN--------------------------
 int main(){
+int choice=0;
     try{
-    int choice=0;
-    cout << "Wählen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
+    
+    cout << "Waehlen Sie die Art ihrer Funktion:"<< endl << endl << "(1) Eindimensional" << endl << "(2) Mehrdimensional"<< endl;
     cin >> choice;
 
     if(choice==1) { //Programmabarbeitung fuer eindimensionale Funktionen
@@ -349,92 +403,287 @@ int main(){
         cout << "(2) f2(x) = (x^4)/4 - x^2 + 2x" << endl;
         cout << "(3) f3(x) = x^5 + 5x^4 +5x^3 -5x^2 - 6x" << endl;
         cout << "(4) f4(x) = x^4 -16x^2 - 1" << endl;
-        cout << "(5) f5(x) = ln(|x^3 + 5x -5|)" << endl;
-        cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl;
-        cout << "(7) (Eigene Funktion eintippen (Format: ax^k+bx^l+cx^m... alle Koeffizienten und Exponenten muessen angegeben werden))" << endl;
+        cout << "(5) (Eigene Funktion eintippen)" << endl;
+
+       /* cout << "(5) f5(x) = ln(|x^3 + 5x -5|)" << endl;
+        cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl; 
+        cout << "(7) (Eigene Funktion eintippen (Format: ------))" << endl; */
         cin >> choice;
-        cout << "Geben Sie die gewuenschte Rechengenauigkeit in Nachkommastellen an." << endl;
+        cout << "Geben Sie die gewuenschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Praezision nicht erlaubt!"); // TODO auch pruefen, dass int nicht Ueberlaeuft bei pow(10, precision)
+                throw invalid_argument("Negative Praezision nicht erlaubt!"); // TODO auch prÃ¼fen, dass int nicht Ã¼berlÃ¤uft bei pow(10, precision)
         cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx = 0;
         cin >> startx;
 
         switch (choice) { //Auswahl der Funktion
-            case 1:
-				cout << "Extremwert: " << newton1d(precision, startx, f1) << endl;
+            case 1: {
+		    
+		cout << "Extremwert: " << newton1d(precision, startx, f1) << endl;
+
+                	
+		ofstream plot("plot.gp");
+				
+		
+	
+		        	
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-5:20]" <<endl
+                     << "plot 2*x*x + exp(-2*x) title 'f(x)=2x^2+e^(-2x)', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+	             
+					 
+				
+				   
+                plot.close();                              
+                break;
+            }
+
+            case 2: {
+	        cout << "Extremwert: " << newton1d(precision, startx, f2) << endl;
+
+		
+	        ofstream plot("plot.gp");
+				
+	
+	
+		        	
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-5:20]" <<endl
+                     << "plot (x*x*x*x)/4-x*x+2*x title 'f(x)=x^4/4-x^2+2x', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+	             
+					 
+				
+				   
+                plot.close();                              
+            }
+
                 break;
 
-            case 2:
-				cout << "Extremwert: " << newton1d(precision, startx, f2) << endl;
+            case 3: {
+	        cout << "Extremwert: " << newton1d(precision, startx, f3) << endl;
+
+               
+		ofstream plot("plot.gp");
+				
+		
+		        	
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+                     << "plot x*x*x*x*x+5*x*x*x*x+5*x*x*x-5*x*x-6*x title 'f(x)=x^5+5x^4+5x^3-5x^2-6x', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+	             
+					 
+				
+				   
+                plot.close(); 
+            }
                 break;
 
-            case 3:
-				cout << "Extremwert: " << newton1d(precision, startx, f3) << endl;
+           case 4: {
+		cout << "Extremwert: " << newton1d(precision, startx, f4) << endl;
+		ofstream plot("plot.gp");
+				
+		
+		        	
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-80:200]" <<endl
+                     << "plot x*x*x*x-16*x*x-1 title 'f(x)=x^4-16x^2-1', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+	             
+					 
+				
+				   
+                plot.close(); 
+            }
                 break;
 
-            case 4:
-				cout << "Extremwert: " << newton1d(precision, startx, f4) << endl;
-                break;
-
-            case 5:
-				cout << "Extremwert: " << newton1d(precision, startx, f5) << endl;
-                break;
-
-            case 6:
-				cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
-                break;
-
-			case 7:
-				cout << "Geben Sie das Polynom ein: ";
+	case 5: {
+		cout << "Geben Sie das Polynom ein: (Format-Beispiel: 3x^2 + 5x^1 + 7x^0) ";
+                ofstream plot("plot.gp"); 
+                
 				try {
 					polynom1d f_in = polynom1d(cin);
+
+                string funktion = toGnu(f_in.toString());
+
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-30:30]" <<endl  
+                     << "set yrange [-30:30]" <<endl
+                     << "plot " <<funktion <<" title 'Funktion', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+			  
+                     plot.close(); 
+
 				/*	cout << "f(1) = " << f_in(1) << endl;
 					cout << "f'(1) = " << f_in.x(1) << endl;
 					cout << "f''(1) = " << f_in.xx(1) << endl; */
-					cout << "Polynom: " << f_in.toString() << endl;
 					cout << "Extremwert: " << newton1d(precision, startx, f_in) << endl;
 				} catch (invalid_argument e) {
 					cerr << "Invalid Argument: " << e.what();
 				}
-				break;
+
+
+              }	
+                     break;	
+
+
+      /*      case 5:
+		        cout << "Extremwert: " << newton1d(precision, startx, f5) << endl;
+                break;
+
+            case 6: {
+		cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
+ 
+	        ofstream plot("plot.gp");
+				
+		
+		        	
+                plot << "set term png" <<endl 
+                     << "set output 'funktion.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+                     << "plot log(abs(x*x*x*x-16*x*x-1)) title 'Platzhalter', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+	             
+					 
+				
+				   
+                plot.close(); 
+            }
+            break;
+			*/
+
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
                 break;
         }
 
     }
-    else if(choice==2) { // Programmabarbeitung für mehrdimensionale Funktionen
+    else if(choice==2) { // Programmabarbeitung fÃ¼r mehrdimensionale Funktionen
         choice=0;
         cout << "Waehlen Sie eine Funktion:" << endl << endl;
         cout << "(1) g1(x,y) = 3x^2 + y^2 - 3xy - 3x" << endl;
         cout << "(2) g2(x,y) = 100 * (y - x^2)^2 + (x - 1)^2 " << endl;
         cout << "(3) g3(x,y) = y^4 + 2x^2 - 3xy + 1" << endl;
-        cout << "(4) g4(x,y) = |xy| + x^2 + y^2 - 2x - 4y" << endl;
-        cout << "(5) g5(x,y) = (x^2 + < - 11)^2 + (x + y^2 - 7)^2" << endl;
+		cout << "(4) g4(x,y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2" << endl;
+        /* cout << "(5) g5(x,y) = |xy| + x^2 + y^2 - 2x - 4y" << endl; */
+        
         cin >> choice;
-        cout << "Geben Sie die gewünschte Rechengenauigkeit in Kommastellen an!" << endl;
+        cout << "Geben Sie die gewuenschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
         cin >> precision;
         if(precision<0)
-                throw invalid_argument("Negative Präzision nicht erlaubt!");
-        cout << "Geben Sie einen Startwert für x an." << endl;
+                throw invalid_argument("Negative Praezision nicht erlaubt!");
+        cout << "Geben Sie einen Startwert fuer x an." << endl;
         double startx =0;
         cin >> startx;
-        cout << "Geben Sie einen Startwert für y an." << endl;
+        cout << "Geben Sie einen Startwert fuer y an." << endl;
         double starty =0;
         cin >> starty;
 
-        switch (choice) { //Auswahl der Funktion
-            case 1:  //do something
+       switch (choice) { //Auswahl der Funktion
+            case 1: { //do something
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g1) << endl;
-				break;
+		    
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot 3*x*x+y*y-3*x*y-3*x title 'g(x)=3x^2+y^2-3xy-3x', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();    
+					    
+	    }
+	        break;
 
-            case 2: //do something else
+            case 2: { //do something else
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g2) << endl;
-				break;
+		
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot 100*(y-x*x)*(y-x*x)+(x-1)*(x-1) title 'g(x)=100*(y-x^2)^2 + (x-1)^2', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  		
+				
+	    }
+		break;	 
+			
+            case 3: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g3) << endl;
+				
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot y*y*y*y+2*x*x-3*x*y+1 title 'g(x)=y^4+2x^2-3xy+1', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  				
+				
+	    }
+		break;	
+			
+    /*        case 4: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g4) << endl;
+				
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot x title 'Platzhalter', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  				
+				
+	    }
+		break;	
+			
+*/ case 4: { //do something
+                cout << "Zielwert: " << newton2d(precision, startx, starty, g5) << endl;
+			
+		ofstream plot("plot.gp");    
+		    
+                plot << "set term png" <<endl 
+                     << "set output 'funktion3d.png'" <<endl
+                     << "set xrange [-10:10]" <<endl  
+                     << "set yrange [-10:10]" <<endl
+	             << "set ticslevel 0" <<endl
+                     << "splot (x*x+y-11)*(x*x+y-11)+(x+y*y-7)*(x+y*y-7) title 'g(x)=(x^2+y-11)^2 + (x+y^2-7)^2', \\" <<endl 
+		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
+		    
+		plot.close();  			
+	    }		
+		break;
+
 
 
 
@@ -454,13 +703,11 @@ int main(){
     } // Ende TRY
     catch(invalid_argument& a) {cerr << a.what() << endl;}
     
+
+    system("gnuplot> load 'plot.gp'");
+    int ende;
+    cin >> ende;
+   
     
 }   // Ende MAIN
 
-/*
-Die Funktionen haben die Variablen namen f1, f2 etc.
-Es werden im Client zwei bzw. drei Variablen definiert die für die Berechnung benötigt werden
-Der User gibt einerseits die Präzision in Kommastellen mit der Variable "int precision" an.
-Weiters gibt er den Startwert/die Startwerte "double startx" und "double starty" an.
-
-*/
