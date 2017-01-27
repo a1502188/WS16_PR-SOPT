@@ -67,32 +67,6 @@ struct : Funktion {
     }
 } f4;
 
-//ln(|x^3+5x-5|)  [WILL NOT WORK]
-struct : Funktion {
-    double value (double x) {
-        return (log(abs(x*x*x+5*x-5)));
-    }
-    double x (double x) {
-        return ((3*x*x+5)/(x*x*x+5*x-5));
-    }
-    double xx (double x) {
-        return ((-3*x*x*x*x-30*x-25)/(x*x*x*x*x*x+10*x*x*x*x-10*x*x*x+25*x*x-50*x+25));
-    }
-} f5;
-
-//ln(|x^4-16x^2-1|)  [WILL NOT WORK]
-struct : Funktion {
-    double value (double x) {
-        return (log(abs(x*x*x*x-16*x*x-1)));
-    }
-    double x (double x) {
-        return ((4*x*x*x-32*x)/(x*x*x*x-16*x*x-1));
-    }
-    double xx (double x) {
-        return ((-4*x*x*x*x*x*x+32*x*x*x*x-524*x*x+32)/(x*x*x*x*x*x*x*x-32*x*x*x*x*x*x+254*x*x*x*x+32*x*x+1));
-    }
-} f6;
-
 // 3x^2+y^2-3xy-3x
 struct : Funktion {
     double value(double x, double y) {
@@ -170,32 +144,6 @@ struct : Funktion {
     }
 
 } g3;
-
-// |xy|+x^2+y^2-2x-4y [WONT WORK]
-struct : Funktion {
-    double value(double x, double y) {
-        return(abs(x*y)+x*x+y*y-2*x-4*y);
-    }
-    double x (double x, double y) {
-        return(((abs(y)*x)/ abs(x))+2*x-2);
-    }
-    double y (double x, double y) {
-        return(((abs(x)*y)/ abs(y))+2*y-4);
-    }
-    double xx (double x, double y) {
-        return(2);
-    }
-    double xy (double x, double y) {
-        return((y*x)/(abs(y)*abs(x)));
-    }
-    double yx (double x, double y) {
-        return((y*x)/(abs(y)*abs(x)));
-    }
-    double yy (double x, double y) {
-        return(2);
-    }
-
-} g4;
 
 // (x^2+y-11)^2 + (x+y^2-7)^2
 struct : Funktion {
@@ -404,10 +352,6 @@ int choice=0;
         cout << "(3) f3(x) = x^5 + 5x^4 +5x^3 -5x^2 - 6x" << endl;
         cout << "(4) f4(x) = x^4 -16x^2 - 1" << endl;
         cout << "(5) (Eigene Funktion eintippen)" << endl;
-
-       /* cout << "(5) f5(x) = ln(|x^3 + 5x -5|)" << endl;
-        cout << "(6) f6(x) = ln(|x^4 - 16x^2 - 1|)" << endl; 
-        cout << "(7) (Eigene Funktion eintippen (Format: ------))" << endl; */
         cin >> choice;
         cout << "Geben Sie die gewuenschte Rechengenauigkeit in Kommastellen an!" << endl;
         int precision=0;
@@ -527,9 +471,6 @@ int choice=0;
 			  
                      plot.close(); 
 
-				/*	cout << "f(1) = " << f_in(1) << endl;
-					cout << "f'(1) = " << f_in.x(1) << endl;
-					cout << "f''(1) = " << f_in.xx(1) << endl; */
 					cout << "Extremwert: " << newton1d(precision, startx, f_in) << endl;
 				} catch (invalid_argument e) {
 					cerr << "Invalid Argument: " << e.what();
@@ -538,33 +479,6 @@ int choice=0;
 
               }	
                      break;	
-
-
-      /*      case 5:
-		        cout << "Extremwert: " << newton1d(precision, startx, f5) << endl;
-                break;
-
-            case 6: {
-		cout << "Extremwert: " << newton1d(precision, startx, f6) << endl;
- 
-	        ofstream plot("plot.gp");
-				
-		
-		        	
-                plot << "set term png" <<endl 
-                     << "set output 'funktion.png'" <<endl
-                     << "set xrange [-10:10]" <<endl  
-                     << "set yrange [-10:10]" <<endl
-                     << "plot log(abs(x*x*x*x-16*x*x-1)) title 'Platzhalter', \\" <<endl 
-		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
-	             
-					 
-				
-				   
-                plot.close(); 
-            }
-            break;
-			*/
 
 
             default: throw invalid_argument("Keine passende Auswahl getroffen!");
@@ -579,7 +493,6 @@ int choice=0;
         cout << "(2) g2(x,y) = 100 * (y - x^2)^2 + (x - 1)^2 " << endl;
         cout << "(3) g3(x,y) = y^4 + 2x^2 - 3xy + 1" << endl;
 		cout << "(4) g4(x,y) = (x^2 + y - 11)^2 + (x + y^2 - 7)^2" << endl;
-        /* cout << "(5) g5(x,y) = |xy| + x^2 + y^2 - 2x - 4y" << endl; */
         
         cin >> choice;
         cout << "Geben Sie die gewuenschte Rechengenauigkeit in Kommastellen an!" << endl;
@@ -595,7 +508,7 @@ int choice=0;
         cin >> starty;
 
        switch (choice) { //Auswahl der Funktion
-            case 1: { //do something
+            case 1: { 
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g1) << endl;
 		    
 		ofstream plot("plot.gp");    
@@ -613,7 +526,7 @@ int choice=0;
 	    }
 	        break;
 
-            case 2: { //do something else
+            case 2: { 
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g2) << endl;
 		
 		ofstream plot("plot.gp");    
@@ -631,7 +544,7 @@ int choice=0;
 	    }
 		break;	 
 			
-            case 3: { //do something
+            case 3: { 
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g3) << endl;
 				
 		ofstream plot("plot.gp");    
@@ -648,26 +561,8 @@ int choice=0;
 				
 	    }
 		break;	
-			
-    /*        case 4: { //do something
-                cout << "Zielwert: " << newton2d(precision, startx, starty, g4) << endl;
-				
-		ofstream plot("plot.gp");    
-		    
-                plot << "set term png" <<endl 
-                     << "set output 'funktion3d.png'" <<endl
-                     << "set xrange [-10:10]" <<endl  
-                     << "set yrange [-10:10]" <<endl
-	             << "set ticslevel 0" <<endl
-                     << "splot x title 'Platzhalter', \\" <<endl 
-		     << "'data.dat' with points title 'Punkte' pt 5" <<endl;
-		    
-		plot.close();  				
-				
-	    }
-		break;	
-			
-*/ case 4: { //do something
+					
+			 case 4: { 
                 cout << "Zielwert: " << newton2d(precision, startx, starty, g5) << endl;
 			
 		ofstream plot("plot.gp");    
